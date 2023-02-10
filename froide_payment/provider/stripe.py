@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from datetime import datetime
 from decimal import Decimal
 from typing import Optional
@@ -183,6 +184,9 @@ class StripeSubscriptionMixin:
                     payment_method=payment_method,
                     invoice_settings={"default_payment_method": payment_method},
                 )
+
+            if os.environ.get('STRIPE_TEST_CLOCK'):
+                pm_kwargs['test_clock'] = os.environ.get('STRIPE_TEST_CLOCK')
 
             stripe_customer = stripe.Customer.create(
                 email=customer.user_email,
